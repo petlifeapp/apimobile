@@ -1,0 +1,2070 @@
+FORMAT: 1A
+HOST: http://api.petlifeapp.com/api/v2
+
+# PetLifeApp - API
+
+Rede social para animais de estimação.
+
+
+
+## Autenticação [/tokens]
+
+
+
+### Login  [POST/tokens/sign_in]
+Autenticação na aplicação
+Parâmetros2
+
+email = Email de acesso do usuário
+password = Senha de acesso do usuário
+access_token = Token de acesso usando o facebook. Esse parâmetro é opcional so é caso de login com o facebook.
+
+Caso a API devolva erro 401 "Dados inválidos", o app deverá redirecionar para a tela de cadastro com os dados retornados do facebook.
+
++ Request (application/json)
+
+    + Headers
+    
+    + Body
+    
+        {
+            "email": "leonardocoutinho@ioasys.com.br",
+            "password": "12341234",
+            "access_token" : "jaosdhohoIHAOSIHFOSjaiofj"
+            
+        }
+        
++ Response 200 (application/json
+    + Body
+
+            {
+               {
+                  "profile": {
+                        "id":"2",
+                        "email": "leonardocoutinho@ioasys.com.br",
+                        "authentication_token": "crSGFzVHKyd7uGuiN-71",
+                        "first_name": "Sheldon",
+                        "last_name": "Beatty",
+                        "picture": "/uploads/profile/picture/1/1.jpg",
+                        "cover_picture": "/uploads/profile/cover_picture/1/8.jpg",
+                        "hashtag": "Labore hic voluptatum assumenda voluptas dignissimos praesentium.",
+                        "pets": 3,
+                        "followings": 0,
+                        "conquests": 0
+                    },
+                  "success": true
+                }
+            }
+            
+            
++ Response 401 (application/json)
+    + Body
+
+            {
+              
+              "error": [
+                        "Dados inválidos"
+                        ],
+              "success": false
+            }
+            
+        
+        
+### Registrar o token do device [PATCH/tokens/register_device_token]
+Método para registrar o token do device no usuário logado, para que seja possível o envio de push notification.
+Parâmetros
+
+device_token = Token de identificação do device.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+    
+        {
+             "device_token": "dvpk_ALyJ_qxre8zFzdL"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "message": "O device foi registrado com sucesso",
+             "success": true
+        }
+        
+### Recuperar senha [PATCH/tokens/recovery_password]
+Método para reedefinir a senha em caso de esquecimento, o método enviará um email para o usuário com as intruções de redefinição
+
+Parâmetros
+email = Email do usuário cadastro.
+
++ Request (application/json)
+
+    + Headers
+        
+    + Body
+    
+        {
+             "email": "leonardocoutinho@ioasys.com.br"
+        }
+
++ Response 200 (application/json)
+
+            {
+                "message": "Um email foi enviado para sua caixa de entrada, contendo as informações para redefinir a sua senha.",
+                "success": false
+            }
+            
++ Response 422 (application/json)
+
+            {
+                "error": [ "Email não encontrado"],
+                "success": false
+            }
+        
+        
+        
+### Redefinir nova senha para usuário [PATCH/profiles/set_new_password]
+Método para redefinir a senha
++ Request (application/json)
+
+     + Headers
+     
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+    + Body
+    
+        {
+            
+            "reset_password_token":"-FYK5RPBWkYyRs9kiSs4",
+            "password": "32133213",
+            "password_confirmation":"32133213"
+        }
+        
++ Response 200 (application/json)
+
+        {
+          "message": "A senha foi redefinida com sucesso",
+          "success": true
+        }
+        
++ Response 422 (application/json)
+    
+        {
+          "error": [
+            "Password confirmation doesn't match Password",
+            "Password confirmation doesn't match Password"
+          ],
+          "success": false
+        }
+
+### Logout [PATCH/tokens/logout]
+Método para deslogar o usuário da aplicação.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+    
++ Response 200 (application/json)
+
+
+    + Body
+            {
+                "message": "Logout efetuado com sucesso",
+                "success": true
+            }
+            
+## Perfis [/profiles]
+
+### Criar conta [POST/profiles/sign_up]
+Método para cirar uma nova conta de acesso ao aplicatiov
+
+Parametros:
+
+email: Email do usuário par acesso ao aplicativo
+password: Senha do usuário  para acesso a aplicação
+password_confirmation: Confrimação de senha, temos que conversar sobre isso, talvez seja melhor fazer essa verificação no frontend ao invés de ser no backend.
+first_name: Primeiro nome do usuário
+last_name: Ultimo nome do usuário
+birthday:  Data de nascimento do usuário
+hashtag: Texto curto usado no perfil como o instagram
+description : Curta descrição sobre o perfil como no instagram
+social_id : Caso o cadastrado seja feito com o facebook
+
+
++ Request (application/json)
+
+    + Headers
+    
+    + Body
+    
+        {
+            "email": "leonardocdsdoutinho+33@ioasys.com.br",
+            "password": "12341234",
+            "password_confirmation": "12341234",
+            "first_name": "Teste",
+            "last_name": "Teste",
+            "birthday": "2014-01-01",
+            "gender": "male",
+            "hashtag": "Teste",
+            "description": "teste"
+            "social_id": "7398271"
+        }
+        
++ Response 200 (application/json
+    + Body
+
+            {
+               {
+                  "profile": {
+                        "email": "leonardocoutinho+33@ioasys.com.br",
+                        "authentication_token": "crSGFzVHKyd7uGuiN-71",
+                        "first_name": "Sheldon",
+                        "last_name": "Beatty",
+                        "gender": "male",
+                        "picture": "/uploads/profile/picture/1/1.jpg",
+                        "cover_picture": "/uploads/profile/cover_picture/1/8.jpg",
+                        "hashtag": "Labore hic voluptatum assumenda voluptas dignissimos praesentium.",
+                        "pets": 3,
+                        "followings": 0,
+                        "conquests": 0
+                    },
+                  "success": true
+                }
+            }
+            
+            
++ Response 422 (application/json)
+    + Body
+
+           {
+                "error": [
+                            "Email has already been taken",
+                            "Email has already been taken"
+                         ] ,
+                "success": false
+            }
+            
+
+
+### Mostrar detalhes do usuário [GET/profiles/get_profile]
+
+Método para mostrar os detalhes do usuário, é necessário apenas o token no header.
+
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "profile": {
+            "email": "leonardocdsdoutinho+573@ioasys.com.br",
+            "first_name": "Teste",
+            "last_name": "Teste",
+            "picture": null,
+            "cover_picture": null,
+            "hashtag": "Teste",
+            "pets": 0,
+            "followings": 0,
+            "conquests": 0
+          },
+          "success": true
+        }
+        
++ Response 422 (application/json)
+
+        {
+         "errors": [
+           "User is not available"
+         ],
+         "success": false
+        }
+                
+
+        
+### Mostrar detalhes de um outro perfil [GET/profiles/details/:id]
+
+Método para mostrar o detalhes de um outro usuário cadastrado na aplicação.
+É necessário que o id do outro perfil seja passado como parte da url, e tambem é necessário o token de autenticação.
+
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "profile": {
+            "email": "leonardocdsdoutinho+573@ioasys.com.br",
+            "first_name": "Teste",
+            "last_name": "Teste",
+            "picture": null,
+            "cover_picture": null,
+            "hashtag": "Teste",
+            "pets": 0,
+            "followings": 0,
+            "conquests": 0
+          },
+          "success": true
+        }
+
+### Mostrar lista de animais seguidos pelo usuário [GET/profiles/pets/get_followings?id=profile_id]
+
+Método para listar de animais seguidos pelo usuário. Caso nao seja enviado o id, a API enviará uma lista de animais que o usuário logado segue.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "pets": [
+            {
+              "id": 1,
+              "name": "Eliza Adams",
+              "picture": "/uploads/pet/picture/1/55.jpg",
+              "conver_picture": "/uploads/profile/picture/1/20.jpg",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "mine": true,
+              "liked": true,
+              
+              "schedules": [   {
+                                    "id" : 1,
+                                    "picture" : "/uploads/pet/picture/1/55.jpg",
+                                    "name" : "Shower Day"
+                                    "date" : "21/01/2016 13:00'
+                                }
+                            ]
+            },
+            {
+              "id": 10,
+              "name": "Deshawn Hilll",
+              "picture": "/uploads/pet/picture/10/55.jpg",
+              "conver_picture": "/uploads/profile/picture/1/20.jpg",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "mine": true,
+              "schedules": []
+            }
+          ],
+          "success": true
+        }
+
+### Alterar dados do usuário [PATCH/profiles/update_profile]
+
+Método para alterar os dados do usuário
+
+Parâmetros
+
+email: Email do usuário par acesso ao aplicativo
+password: Senha do usuário  para acesso a aplicação
+password_confirmation: Confrimação de senha, temos que conversar sobre isso, talvez seja melhor fazer essa verificação no frontend ao invés de ser no backend.
+first_name: Primeiro nome do usuário
+last_name: Ultimo nome do usuário
+birthday:  Data de nascimento do usuário
+hashtag: Texto curto usado no perfil como o instagram
+description : Curta descrição sobre o perfil como no instagram
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+    
+        {
+          "password": "12341234",
+          "password_confirmation": "12341234",
+          "first_name": "Marcos",
+          "last_name": "Almeida",
+          "birthday": "2014-01-01",
+          "hashtag": "Teste",
+          "description": "teste"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "profile": {
+                        "email": "leonardocdsdoutinho+573@ioasys.com.br",
+                        "first_name": "Marcos",
+                        "last_name": "Almeida",
+                        "picture": null,
+                        "cover_picture": null,
+                        "hashtag": "Teste",
+                        "pets": 0,
+                        "followings": 0,
+                        "conquests": 0
+                    },
+          "success": true
+        }
+        
++ Response 422 (application/json)
+
+        {
+          "error": [
+            "Password confirmation doesn't match Password",
+            "Password confirmation doesn't match Password"
+          ],
+          "success": false
+        }
+        
+        
+### Deletar usuário [DELETE/profiles/delete_profile]
+Método para excluir o usuário, é necessário apenas o token no header.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+
++ Response 200 (application/json)
+
+        {
+          "message": "O usuário e suas dependencias foram deletados com sucesso.",
+          "success": true
+        }
+
+## Animais [/pets]
+
+### Adicionar um novo animal [POST/pets]
+
+Método para adicionar novos animais na lista, antes de chamar esse método é necessário chamar o método de get_pet_types, para carregar as espécies e as raças.
+
+Parâmetros
+
+name: "Nome do animal
+picture: Imagem do animal
+breed_id: Id da raça do animal
+cover_picture: Imagem de capa do animal
+size: Tamanho do animal
+weight: Altura do animal (Esses dois atributos temos que conversar sobre para que talvez mudemos para apenas um campo chamado porte)
+birthday: Data de nascimento do animal
+hashtag: Texto curto usado no perfil como o instagram
+description : Curta descrição sobre o perfil como no instagram
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+              "name": "Eliza Adams",
+              "picture": "55.jpg",
+              "breed_id": "1",
+              "cover_picture": "5.jpg",
+              "size": 234,
+              "weight": 123,
+              "birthday": "2016-05-01",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "description": "Quod perspiciatis nesciunt voluptas et autem."
+        }
+        
+        
+
++ Response 200 (application/json)
+
+        {
+              "pet": {
+                        "id": 45,
+                        "name": "Eliza Adams",
+                        "picture": null,
+                        "cover_picture": null,
+                        "animal_type_name": "Cat",
+                        "animal_type_id": 1,
+                        "breed_name": "Test",
+                        "breed_id": 1,
+                        "size": 234,
+                        "weight": 123,
+                        "birthday": "2016-05-01",
+                        "profile_name": null,
+                        "profile_id": 21,
+                        "hashtag": "Voluptatum maxime harum cupiditate.",
+                        "description": "Quod perspiciatis nesciunt voluptas et autem.",
+                        "followings": 0
+                        "liked": true,
+                        "mine": true
+                    },
+              "success": true
+        }
+
+
+### Seguir um animal [POST/pets/followers/set_follower/:id]
+
+Método para adicionar ou remover seguidores de um animal.
+
+Paramêtros
+
+follow: Se o valor da chave for igual a 1 o usuário será adicionado na lista de seguidores.
+Se ovalor da chave for igual a 0 o usuário será removido da lista de seguidores
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+            "follow": 1
+        }
+        
+        
+
++ Response 200 (application/json)
+
+        {
+              "pet": {
+                        "id": 45,
+                        "name": "Eliza Adams",
+                        "picture": null,
+                        "cover_picture": null,
+                        "animal_type_name": "Cat",
+                        "animal_type_id": 1,
+                        "breed_name": "Test",
+                        "breed_id": 1,
+                        "size": 234,
+                        "weight": 123,
+                        "birthday": "2016-05-01",
+                        "profile_name": null,
+                        "profile_id": 21,
+                        "hashtag": "Voluptatum maxime harum cupiditate.",
+                        "description": "Quod perspiciatis nesciunt voluptas et autem.",
+                        "followings": 0
+                        "liked": true,
+                        "mine": true
+                    },
+              "success": true
+        }
+
+
+
+### Carregar lista de espécies e suas respectivas raças [GET/pets/breeds/get_pet_types]
+
+Método para carregar as especéies e as raças para cadastro e alteração dos dados dos animais.
+
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "animal_types": [
+            {
+              "id": 1,
+              "name": "Cat",
+              "breeds": [
+                {
+                  "id": 1,
+                  "name": "Test"
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Dog",
+              "breeds": [
+                {
+                  "id": 2,
+                  "name": "Test2"
+                },
+                {
+                  "id": 3,
+                  "name": "iOasys"
+                },
+                {
+                  "id": 4,
+                  "name": "Buldong"
+                }
+              ]
+            }
+          ],
+          "success": true
+        }
+        
+        
+### Mostrar lista de amimal [GET/pets?profile_id=1]
+
+Método para listar os animais do usuário, necessário apenas o token no header.
+
+Para mostrar a lista de animais  de um outro usuário é necessário  enviar o profile id
+
+No retorno contem uma chave chamada schedules, essa chave serve para listar as agendas dos animais no mês corrente.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "pets": [
+            {
+              "id": 1,
+              "name": "Eliza Adams",
+              "picture": "/uploads/pet/picture/1/55.jpg",
+              "conver_picture": "/uploads/profile/picture/1/20.jpg",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "liked": true,
+              "mine": true,
+              
+              "schedules": [   {
+                                    "id" : 1,
+                                    "picture" : "/uploads/pet/picture/1/55.jpg",
+                                    "name" : "Shower Day"
+                                    "date" : "21/01/2016 13:00'
+                                }
+                            ]
+            },
+            {
+              "id": 10,
+              "name": "Deshawn Hilll",
+              "picture": "/uploads/pet/picture/10/55.jpg",
+              "conver_picture": "/uploads/profile/picture/1/20.jpg",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "mine": true,
+              "schedules": []
+            }
+          ],
+          "success": true
+        }
+        
+
+### Mostrar detalhes do amimal [GET/pets/:id]
+
+Método para mostrar detalhes do animal.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json
+
+        {
+              "pet": {
+                "id": 1,
+                "name": "Eliza Adams",
+                "picture": "/uploads/pet/picture/1/55.jpg",
+                "cover_picture": "/uploads/pet/cover_picture/1/5.jpg",
+                "animal_type_name": "Dog",
+                "animal_type_id": 2,
+                "breed_name": "Test2",
+                "breed_id": 2,
+                "size": 452,
+                "weight": 334,
+                "birthday": "2016-03-28",
+                "profile_name": "Sheldon",
+                "profile_id": 1,
+                "hashtag": "Voluptatum maxime harum cupiditate.",
+                "description": "Quod perspiciatis nesciunt voluptas et autem.",
+                "followings": 0,
+                "mine": true
+              },
+              "success": true
+        }
+        
+### Lista de posts [GET/pets/posts/get_posts/:id]
+
+Lista de posts feitos pelo usuário
+
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+
++ Response 200 (application/json)
+
+        {
+              "posts": [
+                {
+                  "id": 6,
+                  "text": "Teste",
+                  "profile_id": 1,
+                  "first_name": "Abby",
+                  "last_name": "Fritsch",
+                  "picture": "/uploads/profile/picture/1/20.jpg",
+                  "latitude": "213123413",
+                  "longitude": "41324134134",
+                  "datetime": "10/05/2016 19:55:00",
+                  "mine": true,
+                  "liked": false,
+                  "likers_number": 0,
+                  "comments_number": 0,
+                  "pets": [
+                    {
+                      "id": 1,
+                      "picture": "/uploads/pet/picture/1/1.jpg",
+                      "name": "Dangelo Friesen"
+                    },
+                    {
+                      "id": 2,
+                      "picture": "/uploads/pet/picture/2/40.jpg",
+                      "name": "Ms. Providenci Ankunding"
+                    },
+                    {
+                      "id": 3,
+                      "picture": "/uploads/pet/picture/3/55.jpg",
+                      "name": "Greg Auer"
+                    }
+                  ]
+                }
+              ],
+              "success": true
+            }
+            
+        
+        
+### Mostrar seguidores do amimal [GET/pets/followers/get_follower/:id]
+
+Método para mostrar quais são os seguidores do animal.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json
+
+        {
+          "followers": [
+            {
+              "id": 20,
+              "first_name": "Sandra",
+              "last_name": "Gutmann",
+              "picture": "/uploads/profile/picture/20/7.jpg"
+            }
+          ],
+          "success": true
+        }
+
+### Alterar dados do animal [PATCH/pets/:id]
+Métodos para alterar os dados do animal.
+
+
+Parâmetros
+
+name: "Nome do animal
+picture: Imagem do animal
+breed_id: Id da raça do animal
+cover_picture: Imagem de capa do animal
+size: Tamanho do animal
+weight: Altura do animal (Esses dois atributos temos que conversar sobre para que talvez mudemos para apenas um campo chamado porte)
+birthday: Data de nascimento do animal
+hashtag: Texto curto usado no perfil como o instagram
+description : Curta descrição sobre o perfil como no instagram
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+              "name": "Eliza Adams",
+              "picture": "55.jpg",
+              "breed_id": "1",
+              "cover_picture": "5.jpg",
+              "size": 234,
+              "weight": 123,
+              "birthday": "2016-05-01",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "description": "Quod perspiciatis nesciunt voluptas et autem."
+        }
+        
+
++ Response 200 (application/json)
+
+        {
+              "pet": {
+                        "id": 45,
+                        "name": "Eliza Adams",
+                        "picture": null,
+                        "cover_picture": null,
+                        "animal_type_name": "Cat",
+                        "animal_type_id": 1,
+                        "breed_name": "Test",
+                        "breed_id": 1,
+                        "size": 234,
+                        "weight": 123,
+                        "birthday": "2016-05-01",
+                        "profile_name": null,
+                        "profile_id": 21,
+                        "hashtag": "Voluptatum maxime harum cupiditate.",
+                        "description": "Quod perspiciatis nesciunt voluptas et autem.",
+                        "followings": 0
+                    },
+              "success": true
+        }
+
+
+
+### Deletar animal [DELETE/pets/:id]
+
+Métodos para deletar um animal.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "pets": [
+            {
+              "id": 1,
+              "name": "Eliza Adams",
+              "picture": "/uploads/pet/picture/1/55.jpg",
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "schedules": [   {
+                                    "id" : 1,
+                                    "picture" : "/uploads/pet/picture/1/55.jpg",
+                                    "name" : "Shower Day"
+                                    "date" : "21/01/2016 13:00'
+                                }
+                            ]
+            },
+            {
+              "id": 10,
+              "name": "Deshawn Hilll",
+              "picture": "/uploads/pet/picture/10/55.jpg",
+              "hashtag": "Assumenda alias possimus molestias debitis praesentium perferendis est.",
+              "followings": 0,
+              "schedules": []
+            },
+            {
+              "id": 11,
+              "name": "Jonatan Armstrong",
+              "picture": "/uploads/pet/picture/11/54.jpg",
+              "hashtag": "Non sed qui perspiciatis qui.",
+              "followings": 0,
+              "schedules": []
+            },
+            {
+              "id": 41,
+              "name": "Eliza Adams",
+              "picture": null,
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "schedules": []
+            },
+            {
+              "id": 42,
+              "name": "Eliza Adams",
+              "picture": null,
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "schedules": []
+            }
+          ],
+          "success": true
+        }
+
+## Albuns e Fotos [/albuns]
+
+
+
+### Adicionar um novo album [POST/albuns]
+
+Método para adicionar um novo album de fotos para um animal específico
+
+Parâmetros
+
+name : Nome do album
+cover_picture : Foto de capa do album
+pet_id : O animal dono do album
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+            
+                
+            "name": "Eliza Adams",
+            "cover_picture": "5.jpg",
+            "pet_id": "2"
+                
+        }
+        
+
++ Response 200 (application/json)
+
+        {
+            "album": {
+                "id": 5,
+                "name": "Eliza Adams",
+                "cover_picture": null,
+                "photos": []
+              },
+            "success": true
+        }
+
+
+### Mostrar listas de albuns [GET/albuns?pet_id=:id]
+
+Método para listar albuns.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+
++ Response 200 (application/ json) 
+
+        {
+          "albuns": [],
+          "success": true
+        }
+            
+### Mostrar detalhes do album [GET/albuns/:id]
+
+Método para mostrar detalhes do album e suas fotos.
+
++ Request
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
++ Response 200 (application/json)
+
+        {
+          "album": {
+            "id": 1,
+            "name": "Eliza Adams",
+            "cover_picture": null,
+            "photos": []
+          },
+          "success": true
+        }
+### Alterar dados do album [PATCH/albuns/:id]
+
+Método para alterar os dados do album
+
+name : Nome do album
+cover_picture : Foto de capa do album
+pet_id : O animal dono do album
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+            
+                
+            "name": "Eliza Adams",
+            "cover_picture": "5.jpg",
+                
+        }
+        
+
++ Response 200 (application/json)
+
+        {
+            "album": {
+                "id": 5,
+                "name": "Eliza Adams",
+                "cover_picture": null,
+                "photos": []
+              },
+            "success": true
+        }
+
+### Deletar album [DELETE/albuns/:id]
+Método para deletar um album.
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+    
+
+        
+
++ Response 200 (application/json)
+
+        {
+          "albuns": [],
+          "success": true
+        }
+        
+### Adicionar uma nova foto [POST/photos]
+
+Método para adicionar uma foto num album específico
+
+Parâmetros 
+
+album_id = Id do album respectivo a foto
+picture = Foto inserida no album
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+            "album_id":6,
+            "picture":"asdasd"
+            
+        }
+        
++ Response 200 (application/json)
+
+        
+        {
+              "album": {
+                "id": 6,
+                "name": "Eliza Adams",
+                "cover_picture": null,
+                "photos": [
+                  {
+                    "id": 4,
+                    "picture": null
+                  }
+                ]
+              },
+              "success": true
+        }
+        
+
+### Deletar uma foto [DELETE/photos/:id]
+
+Método para deletar uma foto de um album específico
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
++ Response 200 (application/json)
+
+        
+        {
+              "album": {
+                "id": 6,
+                "name": "Eliza Adams",
+                "cover_picture": null,
+                "photos": [
+                  {
+                    "id": 4,
+                    "picture": null
+                  }
+                ]
+              },
+              "success": true
+        }
+        
+                    {
+              "id": 42,
+              "name": "Eliza Adams",
+              "picture": null,
+              "hashtag": "Voluptatum maxime harum cupiditate.",
+              "followings": 0,
+              "schedules": []
+            }
+          ],
+          "success": true
+        }
+
+##Posts [/posts]
+### Lista de posts [GET/posts?global=true]
+
+Método para listar posts,  se o parâmetro global for true, a api devolverá os posts gloais, caso contrário a API devolverá apenas os posts do seus animais e dos animais que seguidos pelo usuário logado.
+
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+
++ Response 200 (application/json)
+
+        {
+              "posts": [
+                {
+                  "id": 6,
+                  "text": "Teste",
+                  "profile_id": 1,
+                  "first_name": "Abby",
+                  "last_name": "Fritsch",
+                  "picture": "/uploads/profile/picture/1/20.jpg",
+                  "latitude": "213123413",
+                  "longitude": "41324134134",
+                  "datetime": "10/05/2016 19:55:00",
+                  "mine": true,
+                  "liked": false,
+                  "likers_number": 0,
+                  "comments_number": 0,
+                  "pets": [
+                    {
+                      "id": 1,
+                      "picture": "/uploads/pet/picture/1/1.jpg",
+                      "name": "Dangelo Friesen"
+                    },
+                    {
+                      "id": 2,
+                      "picture": "/uploads/pet/picture/2/40.jpg",
+                      "name": "Ms. Providenci Ankunding"
+                    },
+                    {
+                      "id": 3,
+                      "picture": "/uploads/pet/picture/3/55.jpg",
+                      "name": "Greg Auer"
+                    }
+                  ]
+                }
+              ],
+              "success": true
+            }
+            
+
+### Lista de posts globais [GET/posts/all/global]
+
+Método para listar o posts globais
+
+
+
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+        {
+              "posts": [
+                {
+                  "id": 6,
+                  "text": "Teste",
+                  "profile_id": 1,
+                  "first_name": "Abby",
+                  "last_name": "Fritsch",
+                  "picture": "/uploads/profile/picture/1/20.jpg",
+                  "latitude": "213123413",
+                  "longitude": "41324134134",
+                  "datetime": "10/05/2016 19:55:00",
+                  "likers_number": 0,
+                  "comments_number": 0,
+                  "pets": [
+                    {
+                      "id": 1,
+                      "picture": "/uploads/pet/picture/1/1.jpg",
+                      "name": "Dangelo Friesen"
+                    },
+                    {
+                      "id": 2,
+                      "picture": "/uploads/pet/picture/2/40.jpg",
+                      "name": "Ms. Providenci Ankunding"
+                    },
+                    {
+                      "id": 3,
+                      "picture": "/uploads/pet/picture/3/55.jpg",
+                      "name": "Greg Auer"
+                    }
+                  ]
+                }
+              ],
+              "success": true
+            }
+
+
+
+###  [GET/posts/:id]
+
+Método para listar os detalhes de um post.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+
++ Response 200 (application/json)
+
+        {
+          "post": {
+            "id": 6,
+            "text": "Teste",
+            "profile_id": 1,
+            "first_name": "Abby",
+            "last_name": "Fritsch",
+            "latitude": "213123413",
+            "longitude": "41324134134",
+            "datetime": "10/05/2016 19:55:00",
+            "liked": false,
+            "likers_number": 0,
+            "comments_number": 0,
+            "pets": [
+              {
+                "id": 1,
+                "picture": "/uploads/pet/picture/1/1.jpg",
+                "name": "Dangelo Friesen"
+              },
+              {
+                "id": 2,
+                "picture": "/uploads/pet/picture/2/40.jpg",
+                "name": "Ms. Providenci Ankunding"
+              },
+              {
+                "id": 3,
+                "picture": "/uploads/pet/picture/3/55.jpg",
+                "name": "Greg Auer"
+              }
+            ],
+            "likers": [
+                {
+                    "id":"1",
+                    "first_name": "Franco",
+                    "last_name":"Marcos",
+                    "picture": "image"
+                }
+            ],
+            "comments": [,
+                {
+                    "id": "1",
+                    "text": "Teste"
+                    "picture": "image"
+                    "datetime": "10/05/2016 19:55:00"
+                }
+            
+            ]
+          },
+          "success": true
+        }
+
+
+### Criar um post [POST/posts]
+Método para criar posts
+
+Paramêtros
+pet_id => ids dos pets que estarão contidos no post.
+text => Texto de descrição do post.
+picture =>  Imagem da descrição do post.
+latitude => Latitude da localização do usuário
+longitude => Longitude de localização do usuário
+
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+            "pet_id": [1,2,3],
+             "date": "1995-01-21",
+             "text": "Teste",
+              "latitude": 213123413,
+              "longitude": 41324134134
+        
+        }
+        
++ Response 200 (application/json)
+
+        {
+              "posts": [
+                {
+                  "id": 6,
+                  "text": "Teste",
+                  "profile_id": 1,
+                  "first_name": "Abby",
+                  "last_name": "Fritsch",
+                  "picture": "/uploads/profile/picture/1/20.jpg",
+                  "latitude": "213123413",
+                  "longitude": "41324134134",
+                  "datetime": "10/05/2016 19:55:00",
+                  "likers_number": 0,
+                  "comments_number": 0,
+                  "liked": false,
+                  "pets": [
+                    {
+                      "id": 1,
+                      "picture": "/uploads/pet/picture/1/1.jpg",
+                      "name": "Dangelo Friesen"
+                    },
+                    {
+                      "id": 2,
+                      "picture": "/uploads/pet/picture/2/40.jpg",
+                      "name": "Ms. Providenci Ankunding"
+                    },
+                    {
+                      "id": 3,
+                      "picture": "/uploads/pet/picture/3/55.jpg",
+                      "name": "Greg Auer"
+                    }
+                  ]
+                }
+              ],
+              "success": true
+            }
+            
+            
+### Deletar um post [DELETE/posts/:id]
+
+Deletar um post do seu feed
+
++ Request (application/json)
+    
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+
++ Response 200 (application/json)
+
+        {
+          "posts": [
+            {
+              "id": 5,
+              "text": "Teste",
+              "profile_id": 1,
+              "first_name": "Abby",
+              "last_name": "Fritsch",
+              "picture": "/uploads/profile/picture/1/20.jpg",
+              "latitude": "213123413",
+              "longitude": "41324134134",
+              "datetime": "10/05/2016 19:54:00",
+              "likers_number": 0,
+              "comments_number": 0,
+              "liked": false,
+              "pets": [
+                {
+                  "id": 1,
+                  "picture": "/uploads/pet/picture/1/1.jpg",
+                  "name": "Dangelo Friesen"
+                },
+                {
+                  "id": 2,
+                  "picture": "/uploads/pet/picture/2/40.jpg",
+                  "name": "Ms. Providenci Ankunding"
+                },
+                {
+                  "id": 3,
+                  "picture": "/uploads/pet/picture/3/55.jpg",
+                  "name": "Greg Auer"
+                }
+              ]
+            }
+          ],
+          "success": true
+        }
+
+
+### Curtir um post [POST/posts/set_post_likers/:id]
+Método para curtir um post.
+
+Parâmetros
+
+like => Se o like for 1 o post será curtido pelo usuário
+Se olike for 0 o post deixará de ser curtido pelo usuário.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+            "like":1
+        }
+    
+
++ Response 200 (application/json)
+
+        {
+            
+          "post": {
+            "id": 5,
+            "text": "Teste",
+            "profile_id": 1,
+            "first_name": "Abby",
+            "last_name": "Fritsch",
+            "latitude": "213123413",
+            "longitude": "41324134134",
+            "datetime": "10/05/2016 19:54:00",
+            "liked": true,
+            "pets": [
+              {
+                "id": 1,
+                "picture": "/uploads/pet/picture/1/1.jpg",
+                "name": "Dangelo Friesen"
+              },
+              {
+                "id": 2,
+                "picture": "/uploads/pet/picture/2/40.jpg",
+                "name": "Ms. Providenci Ankunding"
+              },
+              {
+                "id": 3,
+                "picture": "/uploads/pet/picture/3/55.jpg",
+                "name": "Greg Auer"
+              }
+            ],
+            "likers": [
+              {
+                "id": 1,
+                "first_name": "Abby",
+                "last_name": "Fritsch",
+                "picture": "/uploads/profile/picture/1/20.jpg"
+              }
+            ],
+            "comments": []
+          },
+          "success": true
+        }
+        
+
+
+### Comentar um post [POST/comments]
+
+Método para comentar um post específico.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+        
+            "post_id": "6",
+            "text": "Teste"
+            
+        }
+    
+
+         
++ Response 200 (application/json)
+
+           {
+          "comments": [
+            {
+              "id": 6,
+              "text": "Teste",
+              "profile_id": 1,
+              "first_name": "Abby",
+              "last_name": "Fritsch",
+              "picture": "/uploads/profile/picture/1/20.jpg",
+              "datetime": "10/05/2016 21:58:16"
+            },
+            {
+              "id": 5,
+              "text": "Teste",
+              "profile_id": 1,
+              "first_name": "Abby",
+              "last_name": "Fritsch",
+              "picture": "/uploads/profile/picture/1/20.jpg",
+              "datetime": "10/05/2016 21:57:02"
+            },
+            {
+              "id": 4,
+              "text": "Teste",
+              "profile_id": 1,
+              "first_name": "Abby",
+              "last_name": "Fritsch",
+              "picture": "/uploads/profile/picture/1/20.jpg",
+              "datetime": "10/05/2016 21:53:26"
+            }
+          ],
+          "success": true
+        }
+
+##Reports [/reports]
+
+### Criar um nova denúncia [POST]
+
+Reportar algum conteúdo inadequado no aplicatiovo
+
+Parâmetros
+
+report_type_id" => Id do tipo de denuncia 
+post_id": id do post a ser reportado
+pet_id": id do pet a ser reportado
+profile_id": id do profile a ser reportado
+
+
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+    
+        {
+        "report_type_id":"1",
+        "post_id":"1",
+        "pet_id":"1",
+        "profile_id":"1"
+        }
+        
++ Response 200 (application/json)
+
+            {
+              "message": "Sua denúncia será analisada pela nossa equipe!.",
+              "success": true
+            }
+            
+### Pegar os tipos de denúncias [GET/]
+
+Método para carregar os tipos disponíveis de reports.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
++ Response 200 (application/json)
+
+        {
+          "report_types": [
+            {
+              "id": 1,
+              "name": "Sexual content",
+              "description": 0,
+              "description_br": 0
+            },
+            {
+              "id": 2,
+              "name": "Offensive content",
+              "description": 0,
+              "description_br": 0
+            }
+          ],
+          "success": true
+        }
+        
+
+##Atividades [/schedules]
+
+### Listar todas as atividades[GET/schedules?:pet_id]
+
+Método para listar todas atividades a serem realizada pelos cães.
+
+Paramêtros
+
+pet_id => é necessário enviar o id do pet para que a API retorne a lista de atividades.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
++ Response 200 (application/json)
+
+        {
+          "schedules": [
+            {
+              "id": 1,
+              "init_date": "15/08/16 11:00:00",
+              "end_date": "15/08/16 11:00:00",
+              "name": "Medicament",
+              "picture": null
+            }
+          ],
+          "success": true
+        }
+
+        
+        
+### Mostar detalhes de uma atividade [GET/schedules/:schedule_id]
+
+Método para mostrar detalhes de uma atividade relacionada a um pet.
+
++ Request (application/json)
+
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    
+        
++ Response 200 (application/json)
+
+        {
+          "schedule": {
+            "id": 1,
+            "init_date": "15/08/16 11:00:00",
+            "end_date": "15/08/16 11:00:00",
+            "name": "Medicament",
+            "place": null,
+            "picture": null,
+            "hashtag": "Velit et voluptate voluptatem accusantium ex qui unde."
+          },
+          "success": true
+        }    
+
+        
+        
+### Mostrar lista de atividades cadastradas [GET/schedules/types/get_scheduele_type]
+
+Método para carregar lista de atividades disponíveis, tais como banho, tosa, veterinário e etc.
+
++ Request (application/json)
+
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    
+        
++ Response 200 (application/json)
+
+    
+        {
+     
+              
+          "schedule_types": [
+            {
+              "id": 1,
+              "name": "Shower",
+            },
+            {
+              "id": 2,
+              "name": "Veterinary",
+            },
+            {
+              "id": 3,
+              "name": "Vaccination",
+            },
+            {
+              "id": 4,
+              "name": "Medicament",
+            },
+            {
+              "id": 5,
+              "name": "Other",
+            }
+          ],
+          "success": true
+        }
+        
+
+### Criar uma atividade [POST]
+
+Método para criar uma nova atividade para o pet é necessário carregar os tipos de atividades antes desse método
+
+Parâmetros
+
+
+pet_id => id do animal referente a atividade
+schedule_type_id => tipo de atividade carregadas em outro método
+date => data referente à atividade
+hour => hora da atividade
+hashtag => tag de descrição da atividade
+repeat_interval => tipo de intervalo de repetição, se é a cada dia, semana ou mes, verificar como funciona o retorno do nativo do ios.
+repeat_number => quantidade de intervalo de tempo será repetida
+reminder_interval => tipo de intervalo de lembrete, se é a cada dia, semana ou mes, verificar como funciona o retorno do nativo do ios.
+reminder_number => quantidade de intervalo de tempo será repetida.
+repeat_end  => data para o termino da repetição
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+          "pet_id": 1,
+          "schedule_type_id": 1,
+                      "init_date": "15/08/16 11:00:00",
+            "end_date": "15/08/16 11:00:00",
+          "hashtag": "teste",
+          "place": "asdas",
+          "repeat": 1,
+          "repeat_number": 1,
+          "repeat_end": null
+        
+        }
+    
++ Response 200 (application/json)
+
+    
+        {
+          "schedule": {
+            "id": 10,
+                        "init_date": "15/08/16 11:00:00",
+            "end_date": "15/08/16 11:00:00",
+            "schedule_type":1,
+            "name": "Shower
+            "picture": null,
+            "place": "asdas"
+            ,
+            "hashtag": "teste"
+          },
+          "success": true
+        }
+
+### Alterar uma agenda [PATCH/schedules/:id]
+
+Método para altera uma atividade já existente para o pet é necessário carregar os tipos de atividades antes desse método
+
+Parâmetros
+
+
+pet_id => id do animal referente a atividade
+schedule_type_id => tipo de atividade carregadas em outro método
+date => data referente à atividade
+hour => hora da atividade
+hashtag => tag de descrição da atividade
+repeat_interval => tipo de intervalo de repetição, se é a cada dia, semana ou mes, verificar como funciona o retorno do nativo do ios.
+repeat_number => quantidade de intervalo de tempo será repetida
+reminder_interval => tipo de intervalo de lembrete, se é a cada dia, semana ou mes, verificar como funciona o retorno do nativo do ios.
+reminder_number => quantidade de intervalo de tempo será repetida.
+repeat_end  => data para o termino da repetição
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+        
+        {
+          "pet_id": 1,
+          "schedule_type_id": 1,
+                        "init_date": "15/08/16 11:00:00",
+            "end_date": "15/08/16 11:00:00",
+          "hashtag": "teste",
+          "repeat": true,
+          "repeat_number": 1,
+          "repeat_end": null
+        
+        }
+    
++ Response 200 (application/json)
+
+    
+        {
+          "schedule": {
+            "id": 10,
+                        "init_date": "15/08/16 11:00:00",
+            "end_date": "15/08/16 11:00:00",
+            "schedule_type":1,
+            "name": "Shower
+            "picture": null,
+            "repeat": true,
+            "repeat_number": 1,
+            "hashtag": "teste",
+            "place": "asdas",
+          },
+          "success": true
+        }
+
+
+### Excluir uma atividade [DELETE/schedules/:id]
+
+Método para excluir uma atividade
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+
+    
++ Response 200 (application/json)
+
+    
+        {
+          "schedules": [],
+          "success": true
+        }
+
+
+## Promoções [/promotions]
+
+### Lista de promoções participadas pelo usuário [GET]
+
+Método para listar os detalhes
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
++ Response 200 (application/json)
+
+        
+        {
+          "promotions": [
+            {
+              "id": 1,
+              "goal": 100,
+              "win": null,
+              "verified": null,
+              "pet": {
+                "id": 15,
+                "name": "Dr. Aileen Kirlin",
+                "picture": null,
+                "followers": 1
+              }
+            },
+            {
+              "id": 2,
+              "goal": 100,
+              "win": null,
+              "verified": null,
+              "pet": {
+                "id": 29,
+                "name": "Alvera Friesen II",
+                "picture": null,
+                "followers": 1
+              }
+            }
+          ]
+        }
+        
+### Participar de uma promoção [POST]
+
+Métodos para participar ou deixar de participar de uma promoção. O parâmero join definirá se o usuário vai participar ou deixar de participar.
+
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+    
+        {
+            "join": true ,
+            "promotion_type_id": 1
+        }
+        
++ Response 200 (application/json)
+
+        {
+          "message": "You joined to promotion with successful!",
+          "success": true
+        }
+
++ Response 200 (application/json)
+
+        {
+          "message": "You stopped participating to promotion with successful!",
+          "success": true
+        }
+        
+## Busca [/searches]
+
+### Busca por animais ou perfis [GET/searches?word=Teste&page=1]
+
+Método para buscar por animais ou por usuários.
+
+Caso o parâmetro word estiver preenchido, a API retornará resultados da pesquisa mde animais e usuários cujo nome é/contem a palavra pesquisada.
+
+Caso o parâmetro word não estiver preenchido,a API retornará uma lista de sugestões de pets  ordenados pelo número de likes.
+
+Todos mostrando a primeira página com 10 itens, para listar mais é necessário passar o número da página.
+
++ Request (application/json)
+
+    + Headers
+    
+        x-auth-token: token
+        locale: "pt-BR" or "en"
+        
+    + Body
+
++ Response 200 (application/json)
+
+        {
+          "pets": [
+            {
+              "id": 1,
+              "hashtag": "Et et omnis hic a ut architecto non ea.",
+              "picture": null
+            },
+            {
+              "id": 2,
+              "hashtag": "Facere ullam ipsam quam fugit.",
+              "picture": null
+            },
+            {
+              "id": 3,
+              "hashtag": "Recusandae qui ab occaecati distinctio reprehenderit culpa.",
+              "picture": null
+            },
+            {
+              "id": 4,
+              "hashtag": "Mollitia quia voluptatum iusto soluta eligendi quaerat.",
+              "picture": null
+            },
+            {
+              "id": 5,
+              "hashtag": "Officia voluptates cum est at sit ut.",
+              "picture": null
+            },
+            {
+              "id": 6,
+              "hashtag": "Et fugit sunt et.",
+              "picture": null
+            },
+            {
+              "id": 7,
+              "hashtag": "Vitae sequi hic aperiam sit deleniti.",
+              "picture": null
+            },
+            {
+              "id": 8,
+              "hashtag": "Quidem assumenda nihil voluptatem ullam asperiores quisquam dolorum beatae.",
+              "picture": null
+            },
+            {
+              "id": 9,
+              "hashtag": "Minus voluptatem nisi quia aut.",
+              "picture": null
+            },
+            {
+              "id": 10,
+              "hashtag": "Maxime aut officiis et totam eligendi itaque.",
+              "picture": null
+            }
+          ],
+          "suggested": true,
+          "success": true
+        }
+
++ Response 200 (application/json)
+
+        {
+          "pets": [
+            {
+              "id": 2,
+              "name": "Mr. Shannon Larkin",
+              "profile_id": 5,
+              "profile_firt_name": "Katherine",
+              "profile_last_name": "Rempel",
+              "picture": null
+            }
+          ],
+          "profiles": [
+            {
+              "id": 12,
+              "first_name": "Jayde",
+              "last_name": "Marks",
+              "picture": null
+            }
+          ],
+          "success": true
+        }
